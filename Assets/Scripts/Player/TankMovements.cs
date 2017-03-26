@@ -13,14 +13,14 @@ namespace TankFighters.Player
 
 		private CharacterController controller;
 
-		void Start ()
+		void Start()
 		{
 			controller = GetComponent<CharacterController>();
 			controller.enabled = true;
 		}
 
 
-		void Update ()
+		void Update()
 		{
 			if (!GetComponent<NetworkIdentity>().isLocalPlayer)
 				return;
@@ -29,15 +29,13 @@ namespace TankFighters.Player
 			movement.x += CrossPlatformInputManager.GetAxis("Horizontal");
 			movement.z += CrossPlatformInputManager.GetAxis("Vertical");
 
-			//movement = transform.TransformDirection(movement);
-
 			movement *= speed;
 
-			transform.rotation = Quaternion.LookRotation(movement.normalized);
+			if(movement.magnitude > 0)
+				transform.rotation = Quaternion.LookRotation(movement.normalized);
 
 			movement += Physics.gravity;
 			movement *= Time.deltaTime;
-			Debug.Log("movement: " + movement);
 			controller.Move(movement);
 		}
 	}
