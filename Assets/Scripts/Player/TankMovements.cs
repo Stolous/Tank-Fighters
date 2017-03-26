@@ -9,7 +9,6 @@ namespace TankFighters.Player
 	[RequireComponent (typeof(CharacterController))]
 	public class TankMovements : MonoBehaviour
 	{
-
 		public int speed = 1;
 
 		private CharacterController controller;
@@ -20,7 +19,7 @@ namespace TankFighters.Player
 			controller.enabled = true;
 		}
 
-		// Update is called once per frame
+
 		void Update ()
 		{
 			if (!GetComponent<NetworkIdentity>().isLocalPlayer)
@@ -33,6 +32,9 @@ namespace TankFighters.Player
 			//movement = transform.TransformDirection(movement);
 
 			movement *= speed;
+
+			transform.rotation = Quaternion.LookRotation(movement.normalized);
+
 			movement += Physics.gravity;
 			movement *= Time.deltaTime;
 			Debug.Log("movement: " + movement);
