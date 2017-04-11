@@ -7,11 +7,17 @@ using UnityStandardAssets.CrossPlatformInput;
 namespace TankFighters.Player
 {
 	[RequireComponent (typeof(CharacterController))]
-	public class TankMovements : MonoBehaviour
+	public class TankMovements : NetworkBehaviour
 	{
 		public int speed = 1;
+		public Transform headTransform;
+		public Transform missileSpawn;
+
+		public GameObject missilePrefab;
 
 		private CharacterController controller;
+		private Ray ray = new Ray();
+
 
 		void Start()
 		{
@@ -37,6 +43,41 @@ namespace TankFighters.Player
 			movement += Physics.gravity;
 			movement *= Time.deltaTime;
 			controller.Move(movement);
+
+			if(Input.GetMouseButtonDown(0))
+			{
+				Debug.Log("mousedown");
+
+				ray = Camera.main.ScreenPointToRay(Input.mousePosition + new Vector3(0f, 0f, 10f));
+				RaycastHit hit;
+				if(Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Ground")))
+				{
+					headTransform.LookAt(hit.point);
+					Debug.Log("mousedtouched " + hit.point);
+					CmdSpawnMissile();
+				}
+			}
+			/*for (var i = 0; i < Input.touchCount; ++i) {
+				if (Input.GetTouch(i).phase == TouchPhase.Began && !moveJoystick.gui.HitTest(Input.GetTouch(i).position)) {
+					RaycastHit hit;
+					Physics.Raycast(Camera.main.ScreenPointToRay((Vector3)Input.GetTouch(i).position), out hit, 30);
+					Vector3 aimPosition = new Vector3(hit.point.x, this.transform.position.y, hit.point.z);
+
+					Debug.Log("fire");
+				}
+			}*/
+		}
+
+		[Command]
+		void CmdSpawnMissile()
+		{
+			GameObject missile = (GameObject)Instantiate(missilePrefab, missileSpawn.transform.position, missileSpawn.transform.rotation);
+			NetworkServer.Spawn(missile);
+		}
+
+		void OnDrawGizmos()
+		{
+			Gizmos.DrawRay(ray);
 		}
 	}
 }
