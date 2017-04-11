@@ -7,6 +7,8 @@ namespace TankFighters.Player
 {
 	public class Tank : MonoBehaviour {
 
+		// TODO Add player health
+
 		// Use this for initialization
 		void Start ()
 		{

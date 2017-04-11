@@ -1,7 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.Networking;
+
 using UnityStandardAssets.CrossPlatformInput;
 
 namespace TankFighters.Player
@@ -14,6 +18,7 @@ namespace TankFighters.Player
 		public Transform missileSpawn;
 
 		public GameObject missilePrefab;
+		public Image joystickImage;
 
 		private CharacterController controller;
 		private Ray ray = new Ray();
@@ -23,6 +28,7 @@ namespace TankFighters.Player
 		{
 			controller = GetComponent<CharacterController>();
 			controller.enabled = true;
+			joystickImage = GameObject.Find("MobileJoystick").GetComponent<Image>();
 		}
 
 
@@ -44,6 +50,21 @@ namespace TankFighters.Player
 			movement *= Time.deltaTime;
 			controller.Move(movement);
 
+#if !UNITY_EDITOR
+			for (var i = 0; i < Input.touchCount; ++i)
+			{
+				if (Input.GetTouch(i).phase == TouchPhase.Began)
+				{
+					ray = Camera.main.ScreenPointToRay((Vector3)Input.GetTouch(i).position);
+					RaycastHit hit;
+					if(Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Ground")) && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(i).fingerId))
+					{
+						headTransform.LookAt(new Vector3(hit.point.x, headTransform.position.y, hit.point.z));
+						CmdSpawnMissile(missileSpawn.position);
+					}
+				}
+			}
+#else
 			if(Input.GetMouseButtonDown(0))
 			{
 				ray = Camera.main.ScreenPointToRay(Input.mousePosition + new Vector3(0f, 0f, 10f));
@@ -54,15 +75,7 @@ namespace TankFighters.Player
 					CmdSpawnMissile(missileSpawn.position);
 				}
 			}
-			/*for (var i = 0; i < Input.touchCount; ++i) {
-				if (Input.GetTouch(i).phase == TouchPhase.Began && !moveJoystick.gui.HitTest(Input.GetTouch(i).position)) {
-					RaycastHit hit;
-					Physics.Raycast(Camera.main.ScreenPointToRay((Vector3)Input.GetTouch(i).position), out hit, 30);
-					Vector3 aimPosition = new Vector3(hit.point.x, this.transform.position.y, hit.point.z);
-
-					Debug.Log("fire");
-				}
-			}*/
+#endif
 		}
 
 		[Command]
