@@ -54,7 +54,7 @@ namespace TankFighters.Player
 				{
 					headTransform.LookAt(hit.point);
 					Debug.Log("mousedtouched " + hit.point);
-					CmdSpawnMissile();
+					CmdSpawnMissile(missileSpawn.position);
 				}
 			}
 			/*for (var i = 0; i < Input.touchCount; ++i) {
@@ -69,9 +69,9 @@ namespace TankFighters.Player
 		}
 
 		[Command]
-		void CmdSpawnMissile()
+		void CmdSpawnMissile(Vector3 spawnPosition)
 		{
-			GameObject missile = (GameObject)Instantiate(missilePrefab, missileSpawn.transform.position, missileSpawn.transform.rotation);
+			GameObject missile = (GameObject)Instantiate(missilePrefab, spawnPosition, Quaternion.LookRotation(spawnPosition - this.transform.position));
 			NetworkServer.Spawn(missile);
 		}
 
