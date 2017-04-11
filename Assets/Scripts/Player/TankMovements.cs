@@ -46,14 +46,11 @@ namespace TankFighters.Player
 
 			if(Input.GetMouseButtonDown(0))
 			{
-				Debug.Log("mousedown");
-
 				ray = Camera.main.ScreenPointToRay(Input.mousePosition + new Vector3(0f, 0f, 10f));
 				RaycastHit hit;
 				if(Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Ground")))
 				{
-					headTransform.LookAt(hit.point);
-					Debug.Log("mousedtouched " + hit.point);
+					headTransform.LookAt(new Vector3(hit.point.x, headTransform.position.y, hit.point.z));
 					CmdSpawnMissile(missileSpawn.position);
 				}
 			}
@@ -71,7 +68,7 @@ namespace TankFighters.Player
 		[Command]
 		void CmdSpawnMissile(Vector3 spawnPosition)
 		{
-			GameObject missile = (GameObject)Instantiate(missilePrefab, spawnPosition, Quaternion.LookRotation(spawnPosition - this.transform.position));
+			GameObject missile = (GameObject)Instantiate(missilePrefab, spawnPosition, Quaternion.LookRotation(spawnPosition - headTransform.position));
 			NetworkServer.Spawn(missile);
 		}
 
