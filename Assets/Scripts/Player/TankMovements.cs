@@ -34,7 +34,7 @@ namespace TankFighters.Player
 
 		void Update()
 		{
-			if (!GetComponent<NetworkIdentity>().isLocalPlayer)
+			if(!GetComponent<NetworkIdentity>().isLocalPlayer)
 				return;
 			
 			Vector3 movement = Vector3.zero;

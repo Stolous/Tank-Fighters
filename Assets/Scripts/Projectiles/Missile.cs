@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
+using UnityEngine.Networking;
+
+using TankFighters.Player;
 
 namespace TankFighters.Projectile
 {
-	public class Missile : MonoBehaviour {
-
-		public int damages = 50;
+	public class Missile : NetworkBehaviour
+	{
+		public int damages = 40;
 		public float speed = 1f;
 
 		private Rigidbody rigidbody;
@@ -24,8 +28,11 @@ namespace TankFighters.Projectile
 
 		void OnTriggerEnter(Collider other)
 		{
+			if(!GetComponent<NetworkIdentity>().isServer)
+				return;
 			Debug.Log("collided with " + other);
 			Destroy(this.gameObject);
+			other.GetComponent<Tank>().Damage(damages);
 		}
 	}
 }
