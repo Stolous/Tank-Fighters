@@ -23,12 +23,16 @@ namespace TankFighters.Player
 		private CharacterController controller;
 		private Ray ray = new Ray();
 
+		public float reloadTime = 0.3f;
+		private bool canFire = true;
+
 
 		void Start()
 		{
 			controller = GetComponent<CharacterController>();
 			controller.enabled = true;
 			joystickImage = GameObject.Find("MobileJoystick").GetComponent<Image>();
+			InvokeRepeating("Reload", reloadTime, reloadTime);
 		}
 
 
@@ -69,10 +73,11 @@ namespace TankFighters.Player
 			{
 				ray = Camera.main.ScreenPointToRay(Input.mousePosition + new Vector3(0f, 0f, 10f));
 				RaycastHit hit;
-				if(Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Ground")))
+				if(canFire && Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Ground")))
 				{
 					headTransform.LookAt(new Vector3(hit.point.x, headTransform.position.y, hit.point.z));
 					CmdSpawnMissile(missileSpawn.position);
+					canFire = false;
 				}
 			}
 #endif
@@ -83,6 +88,11 @@ namespace TankFighters.Player
 		{
 			GameObject missile = (GameObject)Instantiate(missilePrefab, spawnPosition, Quaternion.LookRotation(spawnPosition - headTransform.position));
 			NetworkServer.Spawn(missile);
+		}
+
+		private void Reload()
+		{
+			this.canFire = true;
 		}
 
 		void OnDrawGizmos()
