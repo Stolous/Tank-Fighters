@@ -11,7 +11,7 @@ namespace TankFighters.Player
 	public class Tank : NetworkBehaviour
 	{
 		[SyncVar]
-		private int health = 100;
+		public int health = 100;
 
 		//public Slider healthSlider;*
 

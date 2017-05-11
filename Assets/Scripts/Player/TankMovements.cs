@@ -26,9 +26,11 @@ namespace TankFighters.Player
 		public float reloadTime = 0.3f;
 		private bool canFire = true;
 
+		private Tank tank;
 
 		void Start()
 		{
+			tank = GetComponent<Tank>();
 			controller = GetComponent<CharacterController>();
 			controller.enabled = true;
 			joystickImage = GameObject.Find("MobileJoystick").GetComponent<Image>();
@@ -73,7 +75,7 @@ namespace TankFighters.Player
 			{
 				ray = Camera.main.ScreenPointToRay(Input.mousePosition + new Vector3(0f, 0f, 10f));
 				RaycastHit hit;
-				if(canFire && Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Ground")))
+				if(canFire && tank.health > 0 && Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Ground")))
 				{
 					headTransform.LookAt(new Vector3(hit.point.x, headTransform.position.y, hit.point.z));
 					CmdSpawnMissile(missileSpawn.position);
