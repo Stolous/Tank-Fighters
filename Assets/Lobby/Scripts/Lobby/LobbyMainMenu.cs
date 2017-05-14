@@ -9,7 +9,10 @@ namespace Prototype.NetworkLobby
     {
         public LobbyManager lobbyManager;
 
-        public RectTransform lobbyServerList;
+		public RectTransform mainSubPanel;
+		public RectTransform matchmakingSubPanel;
+
+		public RectTransform lobbyServerList;
         public RectTransform lobbyPanel;
 
         public InputField ipInput;
@@ -25,6 +28,23 @@ namespace Prototype.NetworkLobby
             matchNameInput.onEndEdit.RemoveAllListeners();
             matchNameInput.onEndEdit.AddListener(onEndEditGameName);
         }
+
+		public void OnClickMultiplayer()
+		{
+			matchmakingSubPanel.gameObject.SetActive(true);
+			mainSubPanel.gameObject.SetActive(false);
+		}
+
+		public void OnClickSources()
+		{
+			Application.OpenURL("https://github.com/Stolous/Tank-Fighters");
+		}
+
+		public void GoBackToMainSubPanel()
+		{
+			mainSubPanel.gameObject.SetActive(true);
+			matchmakingSubPanel.gameObject.SetActive(false);
+		}
 
         public void OnClickHost()
         {

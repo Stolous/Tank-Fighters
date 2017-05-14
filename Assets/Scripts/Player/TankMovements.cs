@@ -65,7 +65,7 @@ namespace TankFighters.Player
 				{
 					ray = Camera.main.ScreenPointToRay((Vector3)Input.GetTouch(i).position);
 					RaycastHit hit;
-					if(canFire && tank.health > 0 && Physics.Raycast(ray, out hit, 100f, LayerMask) && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(i).fingerId))
+					if(canFire && tank.health > 0 && Physics.Raycast(ray, out hit, 100f, layerMask) && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(i).fingerId))
 					{
 						headTransform.LookAt(new Vector3(hit.point.x, headTransform.position.y, hit.point.z));
 						CmdSpawnMissile(missileSpawn.position);
