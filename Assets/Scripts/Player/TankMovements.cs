@@ -13,7 +13,7 @@ namespace TankFighters.Player
 	[RequireComponent (typeof(CharacterController))]
 	public class TankMovements : NetworkBehaviour
 	{
-		public int speed = 1;
+		public float speed = 1f;
 		public Transform headTransform;
 		public Transform missileSpawn;
 
@@ -56,6 +56,8 @@ namespace TankFighters.Player
 			movement *= Time.deltaTime;
 			controller.Move(movement);
 
+			int layerMask = 1 << LayerMask.NameToLayer("Ground");
+
 #if !UNITY_EDITOR
 			for (var i = 0; i < Input.touchCount; ++i)
 			{
@@ -63,7 +65,7 @@ namespace TankFighters.Player
 				{
 					ray = Camera.main.ScreenPointToRay((Vector3)Input.GetTouch(i).position);
 					RaycastHit hit;
-					if(canFire && tank.health > 0 && Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Ground")) && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(i).fingerId))
+					if(canFire && tank.health > 0 && Physics.Raycast(ray, out hit, 100f, LayerMask) && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(i).fingerId))
 					{
 						headTransform.LookAt(new Vector3(hit.point.x, headTransform.position.y, hit.point.z));
 						CmdSpawnMissile(missileSpawn.position);
@@ -76,7 +78,7 @@ namespace TankFighters.Player
 			{
 				ray = Camera.main.ScreenPointToRay(Input.mousePosition + new Vector3(0f, 0f, 10f));
 				RaycastHit hit;
-				if(canFire && tank.health > 0 && Physics.Raycast(ray, out hit, LayerMask.NameToLayer("Ground")))
+				if(canFire && tank.health > 0 && Physics.Raycast(ray, out hit, 10000f, layerMask))
 				{
 					headTransform.LookAt(new Vector3(hit.point.x, headTransform.position.y, hit.point.z));
 					CmdSpawnMissile(missileSpawn.position);
